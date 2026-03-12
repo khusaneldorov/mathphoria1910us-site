@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecosystem | Khusan Eldorov</title>
+    <!-- Шрифты и Иконки -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg: #050505;
+            --card-bg: #0d0d0d;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --accent: #ffffff;
+            --border: rgba(255, 255, 255, 0.1);
+            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Фоновые математические элементы */
+        .math-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.05;
+            font-family: 'JetBrains Mono', monospace;
+            overflow: hidden;
+        }
+
+        .math-symbol {
+            position: absolute;
+            color: white;
+            font-size: 2rem;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100vh) rotate(360deg); }
+        }
+
+        /* Навигация */
+        nav {
+            position: fixed;
+            top: 0; width: 100%; padding: 1.5rem 0;
+            z-index: 1000;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover { color: var(--text-dim); }
+
+        /* Общие стили секций */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        section { padding: 120px 0; border-top: 1px solid var(--border); }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 80px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 6vw, 4.5rem);
+            font-weight: 800;
+            margin-bottom: 4rem;
+            letter-spacing: -2px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1100px;
+            margin-bottom: 4rem;
+        }
+
+        .hero-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 3rem 2rem;
+            text-align: left;
+            position: relative;
+            transition: transform 0.1s ease-out;
+            perspective: 1000px;
+        }
+
+        .hero-card h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .quote {
+            font-family: 'JetBrains Mono', monospace;
+            font-style: italic;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+        .hero-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 2rem; height: 80px; }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            transition: var(--transition);
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .btn:hover { background: var(--text-main); color: var(--bg); }
+        .btn-scroll-down { margin-top: 2rem; border: none; font-weight: 600; text-decoration: underline;}
+
+        /* CREATOR SECTION */
+        .creator-content { text-align: center; max-width: 800px; margin: 0 auto; }
+        .creator-name { font-size: 4rem; font-weight: 800; margin-bottom: 2rem; }
+        .creator-text { font-size: 1.2rem; color: var(--text-dim); }
+
+        /* PROJECT SECTIONS */
+        .project-section .quote-large {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .project-layout {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .feature-list { list-style: none; margin: 2rem 0; }
+        .feature-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-dim);
+        }
+
+        .social-links { display: flex; gap: 1.5rem; margin-top: 2rem; }
+        .social-links a { color: white; font-size: 1.5rem; transition: var(--transition); }
+        .social-links a:hover { transform: translateY(-5px); opacity: 0.7; }
+
+        /* BLOG SECTIONS */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .blog-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .blog-card:hover { border-color: #555; transform: translateY(-10px); }
+
+        .blog-thumb {
+            width: 100%;
+            height: 200px;
+            background: #1a1a1a;
+            position: relative;
+        }
+        
+        /* Визуализация графа для превью */
+        .blog-thumb::after {
+            content: "y = x²";
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'JetBrains Mono';
+            color: rgba(255,255,255,0.1);
+        }
+
+        .blog-info { padding: 2rem; }
+        .blog-info h4 { margin-bottom: 1rem; font-size: 1.2rem; }
+        .blog-info p { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+        /* CONTACT SECTION */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 5rem;
+        }
+
+        form { display: flex; flex-direction: column; }
+        input, select, textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 0;
+            color: white;
+            font-family: inherit;
+            outline: none;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus { border-bottom-color: white; }
+
+        .direct-contacts p { margin-bottom: 1rem; color: var(--text-dim); }
+        .direct-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 5rem 0;
+            background: #000;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 3rem;
+        }
+
+        .footer-logo-box h3 { font-weight: 800; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .footer-logo-box p { color: var(--text-dim); font-size: 0.8rem; }
+
+        .footer-links h5 { text-transform: uppercase; margin-bottom: 1.5rem; font-size: 0.7rem; letter-spacing: 2px; color: var(--text-dim); }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 0.5rem; font-size: 0.9rem; }
+
+        @media (max-width: 900px) {
+            .hero-grid, .project-layout, .contact-grid { grid-template-columns: 1fr; }
+            .hero { height: auto; padding: 150px 0; }
+            .creator-name { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Математический фон -->
+    <div class="math-bg" id="math-bg"></div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">Khusan Eldorov</div>
+            <div class="nav-links">
+                <a href="#creator">Создатель</a>
+                <a href="#mathphoria">Mathphoria</a>
+                <a href="#1910us">1910us</a>
+                <a href="#contact">Контакты</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 1️⃣ HERO SECTION -->
+    <header class="hero container">
+        <h1 class="reveal">Экосистема проектов <br>Khusan Eldorov</h1>
+        <div class="hero-grid">
+            <div class="hero-card reveal" data-tilt>
+                <span class="quote">«Математика без хуйни.»</span>
+                <h2>Mathphoria</h2>
+                <p>Образовательный математический проект, цель которого — объяснять сложные идеи простым языком.</p>
+                <a href="#mathphoria" class="btn">Перейти к Mathphoria</a>
+            </div>
+            <div class="hero-card reveal" data-tilt>
+                <span class="quote">"For those who dare perplexity."</span>
+                <h2>1910us</h2>
+                <p>Творческий видеопроект, посвящённый эстетике жизни и кинематографическому сторителлингу.</p>
+                <a href="#1910us" class="btn">Перейти к 1910us</a>
+            </div>
+        </div>
+        <a href="#creator" class="btn btn-scroll-down reveal">Изучить проекты <i class="fa-solid fa-arrow-down"></i></a>
+    </header>
+
+    <!-- 2️⃣ CREATOR SECTION -->
+    <section id="creator">
+        <div class="container creator-content">
+            <span class="section-tag reveal">01 // Личность</span>
+            <h2 class="section-title reveal">Создатель проекта</h2>
+            <h3 class="creator-name reveal">Хусан Элдоров</h3>
+            <p class="creator-text reveal">
+                Хусан Элдоров — основатель и CEO двух проектов: Mathphoria и 1910us. 
+                Он создаёт образовательный и творческий контент, который помогает людям понимать математику и находить вдохновение через знания, творчество и визуальные идеи.
+            </p>
+        </div>
+    </section>
+
+    <!-- 3️⃣ MATHPHORIA SECTION -->
+    <section id="mathphoria" class="project-section">
+        <div class="container">
+            <span class="section-tag reveal">02 // Образование</span>
+            <h2 class="reveal">Mathphoria</h2>
+            <span class="quote-large reveal">«Математика без хуйни.»</span>
+            
+            <div class="project-layout">
+                <div class="reveal">
+                    <p>Mathphoria — образовательный проект, где основная идея заключается в объяснении математики через понимание и логику, а не простое решение примеров.</p>
+                    <ul class="feature-list">
+                        <li>— Разбор математических задач</li>
+                        <li>— Подготовка к SAT</li>
+                        <li>— Объяснение сложных тем</li>
+                        <li>— Развитие математического мышления</li>
+                        <li>— Образовательные видео</li>
+                    </ul>
+                </div>
+                <div class="reveal">
+                    <h5>Следить за проектом:</h5>
+                    <div class="social-links">
+                        <a href="https://youtube.com/@mathphoria-x?si=MkNyvYjIidqzf3KV" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://www.instagram.com/mathphoria?igsh=MWgwMWt0cGpsZmUwbg==" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://t.me/mathphoria" target="_blank"><i class="fa-brands fa-telegram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4️⃣ 1910us SECTION -->
+    <section id="1910us" class="project-section">
+        <div class="container">
+            <span class="section-tag reveal">03 // Творчество</span>
+            <h2 class="reveal">1910us</h2>
+            <span class="quote-large reveal">"For those who dare perplexity."</span>
+            
+            <div class="project-layout">
+                <div class="reveal">
+                    <p>1910us — творческий видеопроект, посвящённый эстетике жизни. Видео передают эмоции через монтаж, музыку и визуальный стиль без лишних слов.</p>
+                    <ul class="feature-list">
+                        <li>— Мотивация и дисциплина</li>
+                        <li>— Визуальные истории</li>
+                        <li>— Атмосферные видео</li>
+                        <li>— Путешествия и ностальгия</li>
+                    </ul>
+                </div>
+                <div class="reveal">
+                    <h5>Следить за проектом:</h5>
+                    <div class="social-links">
+                        <a href="https://www.youtube.com/@1910us-x" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://www.instagram.com/1910us?igsh=eWUyZDhiaHViNDBp" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5️⃣ MATH BLOG -->
+    <section id="math-blog">
+        <div class="container">
+            <span class="section-tag reveal">04 // Мышление</span>
+            <h2 class="reveal">Математический блог</h2>
+            <div class="blog-grid">
+                <!-- Карта 1 -->
+                <div class="blog-card reveal">
+                    <div class="blog-thumb"></div>
+                    <div class="blog-info">
+                        <h4>Как понять сложную задачу</h4>
+                        <p>Разбираем методы декомпозиции и поиска неочевидных путей решения.</p>
+                        <a href="#" class="btn">Читать</a>
+                    </div>
+                </div>
+                <!-- Карта 2 -->
+                <div class="blog-card reveal">
+                    <div class="blog-thumb"></div>
+                    <div class="blog-info">
+                        <h4>Почему математика — это мышление</h4>
+                        <p>О том, как решение задач развивает структуру вашего повседневного интеллекта.</p>
+                        <a href="#" class="btn">Читать</a>
+                    </div>
+                </div>
+                <!-- Карта 3 -->
+                <div class="blog-card reveal">
+                    <div class="blog-thumb"></div>
+                    <div class="blog-info">
+                        <h4>5 способов начать понимать математику</h4>
+                        <p>Практические советы для тех, кто хочет преодолеть страх перед числами.</p>
+                        <a href="#" class="btn">Читать</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6️⃣ CREATIVE BLOG -->
+    <section id="creative-blog">
+        <div class="container">
+            <span class="section-tag reveal">05 // Вдохновение</span>
+            <h2 class="reveal">Вдохновляющий блог</h2>
+            <div class="blog-grid">
+                <div class="blog-card reveal">
+                    <div class="blog-thumb"></div>
+                    <div class="blog-info">
+                        <h4>С чего начать видеомонтаж</h4>
+                        <p>Основы композиции, ритма и работы с цветом для новичков.</p>
+                        <a href="#" class="btn">Читать</a>
+                    </div>
+                </div>
+                <div class="blog-card reveal">
+                    <div class="blog-info">
+                        <h4>Программы для монтажа</h4>
+                        <p>AE, Premiere Pro, DaVinci Resolve и CapCut — что выбрать?</p>
+                        <a href="#" class="btn">Читать</a>
+                    </div>
+                </div>
+                <div class="blog-card reveal">
+                    <div class="blog-thumb"></div>
+                    <div class="blog-info">
+                        <h4>Атмосферные видео</h4>
+                        <p>Как передать чувства через объектив без единого слова.</p>
+                        <a href="#" class="btn">Читать</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7️⃣ CONTACT SECTION -->
+    <section id="contact">
+        <div class="container">
+            <span class="section-tag reveal">06 // Коллаборация</span>
+            <h2 class="reveal">Связаться со мной</h2>
+            
+            <div class="contact-grid">
+                <div class="reveal">
+                    <form id="contact-form">
+                        <input type="text" id="user-name" placeholder="ФИО" required>
+                        <select id="request-type">
+                            <option value="Коммерческое предложение">Коммерческое предложение</option>
+                            <option value="Встреча">Встреча</option>
+                            <option value="Донат">Донат</option>
+                        </select>
+                        <textarea id="user-message" rows="5" placeholder="Суть обращения" required></textarea>
+                        <button type="submit" class="btn">Отправить запрос</button>
+                    </form>
+                </div>
+                
+                <div class="direct-contacts reveal">
+                    <p>Прямая связь:</p>
+                    <a href="https://t.me/Khusannboii" class="direct-link" target="_blank">
+                        <i class="fa-brands fa-telegram"></i> Telegram
+                    </a>
+                    <a href="https://www.instagram.com/husannboii?igsh=bHJ0NjNtZHVjenJy" class="direct-link" target="_blank">
+                        <i class="fa-brands fa-instagram"></i> Instagram
+                    </a>
+                    <p style="margin-top: 2rem;">Почта:</p>
+                    <p style="color: white; font-weight: 600;">khusaneldorov@gmail.com</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8️⃣ FOOTER -->
+    <footer>
+        <div class="container footer-flex">
+            <div class="footer-logo-box">
+                <h3>Khusan Eldorov</h3>
+                <p>CEO & Founder of Mathphoria / 1910us</p>
+            </div>
+            
+            <div class="footer-links">
+                <h5>Проекты</h5>
+                <ul>
+                    <li>Mathphoria</li>
+                    <li>1910us</li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h5>Социальные сети</h5>
+                <div class="social-links" style="margin-top:0.5rem">
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-telegram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="container" style="margin-top: 4rem; text-align: center;">
+            <p style="font-size: 0.7rem; color: #444; letter-spacing: 2px;">
+                © 2024 MATHPHORIA / 1910US. ВСЕ ПРАВА ЗАЩИЩЕНЫ.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Анимация появления при скролле (Scroll Reveal)
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Фоновые символы
+        const mathSymbols = ['π', '√', '∑', '∫', '∞', 'f(x)', '∆', 'θ', 'λ'];
+        const bg = document.getElementById('math-bg');
+
+        function createSymbol() {
+            const span = document.createElement('span');
+            span.className = 'math-symbol';
+            span.innerText = mathSymbols[Math.floor(Math.random() * mathSymbols.length)];
+            span.style.left = Math.random() * 100 + 'vw';
+            span.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            span.style.opacity = Math.random() * 0.5;
+            bg.appendChild(span);
+
+            setTimeout(() => { span.remove(); }, 20000);
+        }
+
+        setInterval(createSymbol, 2000);
+
+        // Интерактивный эффект карточек (3D Tilt)
+        const cards = document.querySelectorAll('.hero-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            });
+        });
+
+        // Обработка формы контактов
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('user-name').value;
+            const type = document.getElementById('request-type').value;
+            const msg = document.getElementById('user-message').value;
+            
+            const subject = encodeURIComponent("Запрос с сайта: " + type);
+            const body = encodeURIComponent(`ФИО: ${name}\nТип обращения: ${type}\n\nСуть обращения:\n${msg}`);
+            
+            window.location.href = `mailto:khusaneldorov@gmail.com?subject=${subject}&body=${body}`;
+        });
+    </script>
+</body>
+</html>
